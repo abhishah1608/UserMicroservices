@@ -1,0 +1,1 @@
+memberSearchIndex = [{"p":"com.smart.inventory.user_service","c":"UserServiceApplication","l":"main(String[])","u":"main(java.lang.String[])"},{"p":"com.smart.inventory.user_service","c":"UserServiceApplication","l":"UserServiceApplication()","u":"%3Cinit%3E()"}];updateSearchResults();
