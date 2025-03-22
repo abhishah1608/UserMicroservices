@@ -6,6 +6,8 @@ import com.smart.inventory.user_service.application.validation.annotation.ValidU
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @ValidUserRegistration
 public class UserRequest {
@@ -14,6 +16,11 @@ public class UserRequest {
     private String username;
 	
 	@NotBlank(message = "Password Field is required.")
+	@Size(min = 8, max = 20, message = "Password should be between 8 to 20 charaacters.")
+	@Pattern(
+		    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$",
+		    message = "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special character, and be at least 8 characters long."
+		)
 	private String password;
 	
 	@NotBlank(message = "Role Field is required.")
