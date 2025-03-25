@@ -7,17 +7,17 @@ import com.demo.model.annotations.AutoIncrementField;
 public class User {
 	
 	@AutoIncrementField
-	private Long userId;
+	private Integer userId;
     private String username;
     private String password;
     private String role;
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime validTo;
-	public Long getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(Long userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 	public String getUsername() {

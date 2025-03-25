@@ -1,5 +1,6 @@
 package com.smart.inventory.user_service.application.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.smart.inventory.user_service.application.mapper.UserMapper;
 import com.smart.inventory.user_service.domain.model.User;
@@ -10,9 +11,14 @@ import com.smart.inventory.user_service.domain.repository.UserRepository;
 @Service
 public class UserService {
 
+	
 	private final UserMapper userMapper;
+	
 	private final UserRepository userRepository;
+	
+	
 
+	
 	public UserService(UserMapper userMapper, UserRepository userRepository) {
 		this.userMapper = userMapper;
 		this.userRepository = userRepository;
@@ -29,5 +35,14 @@ public class UserService {
 		}
 		return userMapper.toDTO(savedUser);
 	}
-
+	
+	public UserDto getUser(String username, String password) throws Exception {
+		User user = null;
+		try {
+			user = userRepository.getUser(username, password);
+		} catch (Exception ex) {
+			throw ex;
+		}
+		return userMapper.toDTO(user);
+	}
 }

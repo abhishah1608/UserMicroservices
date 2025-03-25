@@ -13,4 +13,6 @@ public interface UserRepository {
 	
 	public boolean existsByUsernameAndEmail(String username, String email) throws SQLException;
 	
+	public User getUser(String username, String password) throws Exception;
+	
 }
