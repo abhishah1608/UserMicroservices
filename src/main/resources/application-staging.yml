@@ -1,0 +1,11 @@
+server:
+ port: 8090
+spring:
+ application: 
+  name: User Service
+ datasource: 
+  url: sqlserver://10.0.0.27:52284;databaseName=SmartInventoryDB;TrustServerCertificate=True
+  username: abhitest
+  password: Abhi123@.
+  driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+

@@ -13,31 +13,35 @@ import com.smart.inventory.user_service.infrastructure.repository.JwtService;
 @Component
 public class JwtAuthAspect {
 
-    
-    private JwtService jwtService;
+	private JwtService jwtService;
 
-    private HttpServletRequest request;
-    
-    public JwtAuthAspect(JwtService jwtservice, HttpServletRequest request)
-    {
-        this.jwtService = jwtservice; 	
-        this.request = request;
-    }
+	private HttpServletRequest request;
 
-    @Before("@annotation(com.smart.inventory.user_service.application.validation.annotation.JwtAuthRequired)")
-    public void validateJwtToken(JoinPoint joinPoint) {
-        String authHeader = request.getHeader("Authorization");
-        String username= request.getHeader("username");
-        String role = request.getHeader("role");
+	public JwtAuthAspect(JwtService jwtservice, HttpServletRequest request) {
+		this.jwtService = jwtservice;
+		this.request = request;
+	}
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Missing or invalid Authorization header");
-        }
+	@Before("@annotation(com.smart.inventory.user_service.application.validation.annotation.JwtAuthRequired)")
+	public void validateJwtToken(JoinPoint joinPoint) {
+		String authHeader = request.getHeader("Authorization");
+		String username = request.getHeader("username");
+		String role = request.getHeader("role");
 
-        String token = authHeader.substring(7); // Remove "Bearer "
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			throw new UnauthorizedException("Missing or invalid Authorization header");
+		}
 
-        if (!jwtService.validateToken(token, username, role)) {
-            throw new UnauthorizedException("Invalid JWT token");
-        }
-    }
+		String token = authHeader.substring(7); // Remove "Bearer "
+
+		try {
+
+			if (!jwtService.validateToken(token, username, role)) {
+				throw new UnauthorizedException("Invalid JWT token");
+			}
+		} catch (Exception ex) {
+			// some exception generated from that, so throw this error.
+			throw new UnauthorizedException("Invalid JWT token");
+		}
+	}
 }
