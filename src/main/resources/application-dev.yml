@@ -4,8 +4,8 @@ spring:
   application:
     name: User Service
   datasource:
-    url: jdbc:sqlserver://10.0.0.27:52284;databaseName=SmartInventoryDB;TrustServerCertificate=True
-    username: abhitest
+    url: jdbc:sqlserver://192.168.103.30:52284;databaseName=SmartInventoryDB;TrustServerCertificate=True
+    username: ashah
     password: Abhi123@.
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 security:
