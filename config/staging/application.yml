@@ -1,5 +1,16 @@
 server:
-  port: 8090
+  port: 8091
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics 
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name:usermicroservices}
 spring:
   application:
     name: User Service

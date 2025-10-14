@@ -101,6 +101,17 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.demo</groupId>
 			<artifactId>annotations</artifactId>
 			<version>1.0.0</version>
@@ -124,7 +135,7 @@
 	</dependencies>
 
 	<build>
-	  <defaultGoal>clean package</defaultGoal>
+		<defaultGoal>clean package</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

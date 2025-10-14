@@ -1,5 +1,16 @@
 server:
-  port: 8091
+  port: 8090
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics 
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name:usermicroservices}
 spring:
   application:
     name: User Service
@@ -12,5 +23,3 @@ security:
   jwt:
     secret-key: 3cfa76ef14937c1c1EA819f4fc057A80fcd05a7420f8e84cd0a7567c212e005b
     expiration: 3600000
-
-

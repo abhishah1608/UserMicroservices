@@ -20,6 +20,9 @@ import com.smart.inventory.user_service.presentation.dto.ErrorResponse;
 import com.smart.inventory.user_service.presentation.dto.UserDto;
 import com.smart.inventory.user_service.presentation.request.UserRequest;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -29,24 +32,41 @@ public class UserController {
 
 	UserService userservice = null;
 	
-    private JwtService jwtService;
+    private final MeterRegistry meterRegistry;
+    
+    private final Counter createUserCounter;
 
-	public UserController(UserService userservice, JwtService jwtService) {
+    private final Counter getUserCounter;
+	
+    private JwtService jwtService;
+    
+    private final Timer createUserTimer;
+
+
+	public UserController(UserService userservice, JwtService jwtService, MeterRegistry meterRegistry) {
 		this.userservice = userservice;
 		this.jwtService = jwtService;
+		this.meterRegistry = meterRegistry;
+		this.createUserTimer = meterRegistry.timer("create.user.timer", "service", "Create User Service");
+		this.createUserCounter = Counter.builder("create_user_request").description("how many /createuser were called").register(meterRegistry);
+		this.getUserCounter = Counter.builder("get_user_request").description("how many /auth request were called").register(meterRegistry);	
 	}
 
 	
 	@PostMapping("/createuser")
 	public ResponseEntity<?> createUser(@Validated @RequestBody UserRequest user) {
-		UserDto userdto = null;
-		try {
-			userdto = this.userservice.createUser(user);
-		} catch (Exception ex) {
-	        ErrorResponse error = new ErrorResponse("Server side error", ex.getMessage());
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-		} 
-		return ResponseEntity.ok(userdto);
+		this.createUserCounter.increment();
+		createUserTimer.record(()->{
+			try {
+				UserDto userdto = null;
+				userdto = this.userservice.createUser(user);
+				return ResponseEntity.ok(userdto);
+			} catch (Exception ex) {
+		        ErrorResponse error = new ErrorResponse("Server side error", ex.getMessage());
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+			}	
+		});
+		return null;
 	}
 	
 	@GetMapping("/auth")
@@ -54,6 +74,7 @@ public class UserController {
 	{
 		UserDto userdto = null;
 		try {
+			this.getUserCounter.increment();
 			userdto = this.userservice.getUser(username, password);
 	        if(userdto == null)
 	        {
