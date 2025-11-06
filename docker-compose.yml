@@ -21,7 +21,7 @@ services:
       - prometheus
 
   app:
-    image: usermicroservice:latest
+    image: usermicroservices:2.0
     container_name: usermicroservice
     restart: always
     ports:
