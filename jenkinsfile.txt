@@ -1,0 +1,66 @@
+
+pipeline {
+    agent any
+
+    environment {
+        // Define an environment variable to hold the Docker Hub credentials ID created in Jenkins
+        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
+    }
+
+    stages {
+        stage('Sparse Checkout Config Files') {
+            steps {
+                script {
+                    // Use a standard SCM step with sparse checkout configured
+                    // This assumes you have a configured Git SCM block that supports sparse checkout options.
+                    // A simple script-based approach for specific files can also work:
+                    sh '''
+                    # Ensure the repo is clean and fetch only specific paths
+                    rm -rf *
+                    rm -rf .[^.]* ..?*
+                    git clone --no-checkout https://github.com/abhishah1608/UserMicroservices.git .
+                    git sparse-checkout init --cone
+                    git sparse-checkout set config .env docker-compose.yml prometheus.yml 
+                    git checkout main 
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Login and Pull Image') {
+            steps {
+                script {
+                    // Use the 'withCredentials' block to inject the Docker credentials into the environment
+                    withCredentials([usernamePassword(
+                        credentialsId: env.DOCKER_CREDENTIALS_ID,
+                        passwordVariable: 'DOCKER_PASSWORD',
+                        usernameVariable: 'DOCKER_USERNAME'
+                    )]) {
+                        // Log in to Docker Hub using the injected environment variables
+                        sh 'docker login -u $DOCKER_USERNAME --password $DOCKER_PASSWORD'
+                        
+                        sh 'docker pull abhishah1608/usermicroservices:2.0'
+                    }
+                }
+            }
+        }
+
+        stage('Run Docker Compose') {
+            steps {
+                script {
+                    // Start the services defined in the docker-compose.yml file, detached
+                    // Ensure your docker-compose.yml, 'config' folder, and '.env' file are present in the workspace
+                    sh 'docker compose up -d'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Optional: Clean up workspace or log out of docker
+            sh 'docker logout'
+        }
+    }
+}
+
