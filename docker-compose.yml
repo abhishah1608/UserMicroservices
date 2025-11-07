@@ -21,11 +21,11 @@ services:
       - prometheus
 
   app:
-    image: usermicroservices:2.0
+    image: abhishah1608/usermicroservices:2.0
     container_name: usermicroservice
     restart: always
     ports:
-      - "8080:8090"
+      - "8070:8090"
     environment:
       SPRING_PROFILES_ACTIVE: ${PROFILE}     # e.g., dev or staging
       SPRING_CONFIG_ADDITIONAL_LOCATION: "file:/config/"
